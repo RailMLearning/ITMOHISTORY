@@ -1,16 +1,81 @@
-# React + Vite
+# History Duel
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Интерфейс для диалога с двумя историческими мыслителями:
+- П. Я. Чаадаев (`west`)
+- А. С. Хомяков (`slav`)
 
-Currently, two official plugins are available:
+Теперь проект включает **frontend + backend**. Бэкенд запускает локальную LLM через **Ollama** и задаёт роль через системный промпт.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Требования
 
-## React Compiler
+- Node.js 18+
+- Установленная и запущенная [Ollama](https://ollama.com/)
+- Загруженная модель (по умолчанию `llama3.1:8b`)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Пример подготовки Ollama:
 
-## Expanding the ESLint configuration
+```powershell
+ollama pull llama3.1:8b
+ollama serve
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Установка
+
+```powershell
+npm install
+```
+
+## Запуск
+
+Одновременно фронтенд и бэкенд:
+
+```powershell
+npm run dev:full
+```
+
+По отдельности:
+
+```powershell
+npm run server
+npm run dev
+```
+
+- Frontend: `http://localhost:5173`
+- Backend: `http://localhost:8787`
+
+## API
+
+### `GET /api/health`
+Проверка доступности Ollama.
+
+### `POST /api/chat`
+Тело запроса:
+
+```json
+{
+  "character": "west",
+  "message": "Каков путь России?",
+  "history": [
+    { "role": "user", "content": "..." },
+    { "role": "assistant", "content": "..." }
+  ]
+}
+```
+
+- `character`: `west` или `slav`
+- `message`: текущий вопрос
+- `history`: контекст предыдущих реплик
+
+## Переменные окружения
+
+- `PORT` — порт backend (по умолчанию `8787`)
+- `OLLAMA_URL` — URL Ollama API (по умолчанию `http://127.0.0.1:11434`)
+- `MODEL_NAME` — имя модели Ollama (по умолчанию `llama3.1:8b`)
+
+Пример:
+
+```powershell
+$env:MODEL_NAME="qwen2.5:7b"
+npm run server
+```
+

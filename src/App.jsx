@@ -7,7 +7,7 @@
 */
 
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion as Motion, AnimatePresence } from "framer-motion";
 import chaadaevImg from './assets/Chaadaev_portrait.jpeg';
 import khomyakovImg from './assets/KhomyakovA_AvtoportretABR.jpg';
 
@@ -54,10 +54,6 @@ body { overflow: hidden; background: #050302; }
 @keyframes rise {
   from { opacity:0; transform:translateY(14px); }
   to   { opacity:1; transform:translateY(0); }
-}
-@keyframes divider-glow {
-  0%,100% { box-shadow:0 0 8px var(--gold),0 0 24px rgba(201,168,76,.3); }
-  50%     { box-shadow:0 0 18px var(--gold),0 0 50px rgba(201,168,76,.5); }
 }
 @keyframes float-rune {
   0%,100% { transform:translateY(0) rotate(0deg);  opacity:.09; }
@@ -138,8 +134,7 @@ textarea.chat-input::placeholder { color:rgba(242,228,196,.28); font-style:itali
   position:fixed; inset:0; pointer-events:none; z-index:9999;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   opacity:.038;
-}
-`;
+}`;
 
 /* ─────────────────────────────────────────────
    CHARACTER DATA
@@ -159,9 +154,40 @@ const CHARS = {
     gradFull: "linear-gradient(160deg,#05111f 0%,#0c2340 45%,#132d50 100%)",
     gradPreview: "linear-gradient(180deg,rgba(5,17,31,0.2) 0%,rgba(5,17,31,0.96) 100%)",
     quote: "«Мы не принадлежим ни к одному из великих семейств человеческого рода»",
-    bio: "Русский философ и публицист. Автор «Философических писем» — трактата, потрясшего основы российского самосознания. Объявлен властями официально сумасшедшим за критику исторического пути России.",
-    fullBio: `Пётр Яковлевич Чаадаев (1794–1856) — русский философ, публицист и общественный мыслитель, один из наиболее самобытных умов своей эпохи.\n\nРодился в дворянской семье, рано лишился родителей и воспитывался под опекой тётки. Получил блестящее образование, участвовал в Отечественной войне 1812 года и заграничных походах. В 1821 году неожиданно для всех вышел в отставку в чине ротмистра гвардии — поступок, так и оставшийся загадкой для современников.\n\nГлавный труд Чаадаева — «Философические письма» (1829–1831), написанные по-французски. В первом из них он беспощадно критикует историческое прошлое России: по его мнению, страна стоит вне мировой цивилизации, не внесла ничего в общую сокровищницу человечества и лишена исторической памяти. Публикация первого письма в журнале «Телескоп» в 1836 году вызвала грандиозный скандал: журнал был закрыт, редактор сослан, а сам Чаадаев по личному указу Николая I объявлен сумасшедшим и отдан под медицинский надзор.\n\nНесмотря на это, Чаадаев продолжал посещать московские салоны и участвовать в интеллектуальной жизни. В «Апологии сумасшедшего» (1837) он смягчил свои взгляды, признав за Россией особую историческую миссию — но не в прошлом, а в будущем.\n\nЧаадаев оказал огромное влияние на всю последующую русскую мысль, став невольным отцом полемики между западниками и славянофилами.`,
+    bio: "Пётр Яковлевич Чаадаев (1794–1856) - русский философ и публицист, чьи сочинения стали катализатором идейной полемики между западниками и славянофилами в XIX веке. Его главный труд, «Философические письма», содержит глубокую и трагическую критику места России в мировой истории, за публикацию которого автор был официально объявлен сумасшедшим.",
+    fullBio: `Происхождение и ранние годы (1794–1812)
+Пётр Яковлевич Чаадаев родился 27 мая (7 июня) 1794 года в Москве в старинной дворянской семье. По материнской линии он был внуком известного историка князя М. М. Щербатова. Рано осиротев, воспитывался теткой, княжной А. М. Щербатовой, и дядей, князем Д. М. Щербатовым, получив блестящее домашнее образование. С 1807 по 1811 год слушал лекции в Московском университете, где его товарищами были будущие декабристы И. Д. Якушкин и Н. И. Тургенев, а также А. С. Грибоедов.
+Военная карьера и война 1812 года
+В мае 1812 года Чаадаев поступил на военную службу подпрапорщиком в лейб-гвардии Семёновский полк. Он был активным участником Отечественной войны 1812 года и Заграничных походов русской армии:
+	Сражался в Бородинском сражении (за отличие произведен в прапорщики), под Тарутином и Малоярославцем.
+	Участвовал в битвах при Лютцене, Бауцене и Кульме, а также во взятии Парижа.За храбрость был награжден российским орденом Св. Анны 4-й степени и прусским орденом «Pour le Mérite». По словам его биографа М. Жихарева, это был «храбрый обстрелянный офицер», пользовавшийся всеобщим уважением.
+Отставка и духовные искания
+В 1816 году Чаадаев был переведен в лейб-гвардии Гусарский полк, расквартированный в Царском Селе. Там он познакомился с лицеистом А. С. Пушкиным, на которого оказал огромное влияние (Пушкин посвятил ему несколько стихотворений, включая «К Чаадаеву»).
+Блестящая карьера была ему гарантирована: в 1817 году он стал адъютантом командира гвардейского корпуса, и император Александр I прочил его в свои флигель-адъютанты. Однако в 1821 году Чаадаев неожиданно подал в отставку. Причиной называют его нравственное несогласие с расправой над восставшим Семёновским полком, где служили его друзья, и гордое нежелание добиваться «милости». В 1823–1826 годах он путешествовал по Европе, встречался с философом Ф. Шеллингом.
+«Философические письма» и трагедия публикации
+По возвращении в Россию Чаадаев написал свое главное сочинение - «Философические письма» (на французском языке, в форме восьми писем к Е. Д. Пановой). Они создавались в период 1828–1831 годов.
+В 1836 году журнал «Телескоп» опубликовал первое из писем. В нем Чаадаев дал резко критический анализ российской истории: по его мнению, Россия оказалась «отлученной от всемирного воспитания человеческого рода», пребывая в духовном застое и национальном самодовольстве.
+Реакция властей была жесточайшей:
+	Журнал «Телескоп» был немедленно закрыт.
+	Редактор Н. И. Надеждин сослан, цензор уволен со службы.
+	Сам Чаадаев высочайшим повелением императора Николая I был объявлен сумасшедшим. За ним установили медико-полицейский надзор, и он мог выходить из дома только раз в день.
+Последние годы и «Апология сумасшедшего»
+Через год надзор был снят с условием «не сметь ничего писать». В ответ на обвинения в отсутствии патриотизма Чаадаев написал «Апологию сумасшедшего» (1837). В этом произведении он, признавая критику, выразил веру в великое историческое будущее России, которая, по его мнению, призвана ответить на важнейшие вопросы, стоящие перед человечеством.
+Последние годы жизни он провел в Москве, участвуя в интеллектуальных дискуссиях, общаясь как с западниками (Герцен, Грановский), так и со славянофилами (Киреевский, Хомяков). Пётр Яковлевич Чаадаев скончался в Москве 14 (26) апреля 1856 года.
+Труды П. Я. Чаадаева
+Основное наследие Чаадаева невелико по объему, но огромно по влиянию на русскую мысль.
+1.	«Философические письма» (1828–1831)
+Это центральное произведение в творчестве Чаадаева. Цикл из восьми писем, из которых при жизни автора было опубликовано только первое. Письма посвящены философии истории, роли России в мировом цивилизационном процессе и религиозному смыслу истории.
+2.	«Апология сумасшедшего» (1837)
+Философско-публицистическое эссе, написанное как ответ на гонения после публикации «Философических писем». В нем Чаадаев смягчает некоторые свои оценки и формулирует мысль об особой миссии России, которая может дать миру важные уроки, так как не связана грузом прошлого.
+3.	Письма и статьи
+Чаадаев оставил обширное эпистолярное наследие. Его письма к А. С. Пушкину, декабристам, европейским мыслителям, а также различные небольшие статьи и заметки на философские и общественные темы являются важной частью его творчества.`,
     keyIdeas: ["Европейский путь", "Реформы и прогресс", "Рационализм", "Права личности"],
+    sources: [
+      "Чаадаев П.Я. Философические письма (1829–1831)",
+      "Чаадаев П.Я. Апология сумасшедшего (1837)",
+      "Чаадаев П.Я. Письма к А.И. Тургеневу",
+    ],
   },
   slav: {
     id: "slav",
@@ -177,9 +203,35 @@ const CHARS = {
     gradFull: "linear-gradient(160deg,#1a0804 0%,#3a1008 45%,#4d1508 100%)",
     gradPreview: "linear-gradient(180deg,rgba(26,8,4,0.2) 0%,rgba(26,8,4,0.96) 100%)",
     quote: "«Россия сильна не единством власти, а единством духа»",
-    bio: "Русский религиозный философ, поэт и богослов. Один из основоположников славянофильства. Отстаивал идею соборности, особого духовного пути России через православие и общинный уклад.",
-    fullBio: `Алексей Степанович Хомяков (1804–1860) — русский религиозный философ, богослов, поэт и публицист, один из основателей и главных идеологов славянофильства.\n\nРодился в старинной дворянской семье, получил домашнее образование, в юности увлекался математикой и живописью. Служил в кавалерии, участвовал в русско-турецкой войне 1828–1829 годов, после чего вышел в отставку и полностью посвятил себя литературе, философии и богословию.\n\nЦентральное понятие философии Хомякова — «соборность»: свободное единство людей в любви и истине, основанное на православной вере. В противовес западному рационализму он утверждал, что истина открывается не отдельному разуму, а живой церковной общине. Католицизм он критиковал за авторитаризм, протестантизм — за индивидуализм; православие, по его убеждению, единственно верно хранит апостольское предание.\n\nВ историософии Хомяков противопоставлял два начала: «иранское» (духовное, свободное) и «кушитское» (материальное, принудительное). Россия и славянство в целом принадлежат к иранскому типу и призваны обновить дряхлеющую западную цивилизацию.\n\nХомяков был человеком энциклопедического ума: помимо философии занимался агрономией, изобрёл новый тип паровой машины и ружьё особой конструкции. Его богословские труды при жизни не могли быть изданы в России из-за цензуры и выходили за рубежом.`,
+    bio: "Алексей Степанович Хомяков (1804–1860) - русский поэт, художник, публицист, богослов и философ, стоявший у истоков славянофильства.",
+    fullBio: `Ранние годы и образование (1804–1822)
+Алексей Степанович Хомяков родился 1 (13) мая 1804 года в Москве на Ордынке в старинной дворянской семье. Его отцом был Степан Александрович Хомяков, а матерью - Марья Алексеевна, урождённая Киреевская.
+Он получил основательное домашнее образование, а в 1821 году сдал экзамен при Московском университете на степень кандидата математических наук. Ко времени его обучения в Москве относятся и первые литературные опыты: стихотворения и перевод «Германии» Тацита.
+Военная служба и путешествия (1822–1829)
+В 1822 году Хомяков поступил на военную службу - сначала в Астраханский кирасирский полк, а через год перевёлся в Петербург, в лейб-гвардии Конный полк. В 1825 году он временно оставил службу и уехал за границу, где, в частности, занимался живописью в Париже и написал историческую драму «Ермак».
+С началом Русско-турецкой войны (1828–1829) Хомяков вернулся в армию и принял участие в боевых действиях, проявив храбрость. По окончании войны, в чине штаб-ротмистра, он вышел в отставку и поселился в своём имении, посвятив себя хозяйству и литературным занятиям.
+Становление философа и главы славянофильства (1830–1850-е)
+Вернувшись к мирной жизни, Хомяков активно включился в литературно-философскую жизнь Москвы. В 1836 году он женился на Екатерине Михайловне Языковой, сестре поэта Николая Языкова.
+В этот период он сближается с кругом единомышленников (И. В. Киреевский, Ю. Ф. Самарин, К. С. Аксаков) и становится признанным лидером формирующегося славянофильства. Свою программу он изложил в программной статье «О старом и новом» (1839). Хомяков активно сотрудничал в славянофильских изданиях - «Москвитянин», «Русская беседа».
+В 1838 году он приступил к работе над фундаментальным историко-философским трудом «Записки о всемирной истории» (известном также как «Семирамида»), который остался незавершённым. В 1856 году он был избран членом-корреспондентом Петербургской Академии наук.
+Последние годы и кончина
+Алексей Степанович Хомяков скончался 23 сентября (5 октября) 1860 года в своём имении Ивановское (ныне в Липецкой области) от холеры, которой заразился, леча крестьян во время эпидемии. Первоначально он был похоронен в Даниловом монастыре в Москве, а в советское время его прах перенесли на Новодевичье кладбище.
+Основные труды А. С. Хомякова
+Философские и исторические работы
+	«О старом и новом» (1839) - программная статья, в которой были сформулированы ключевые идеи славянофильства: противопоставление исторического пути России и Запада, идеализация допетровской Руси и критика реформ Петра I.
+	«Записки о всемирной истории» (т. 1–3, опубл. 1871–1873) - монументальный, но незавершённый труд, известный также под названием «Семирамида». В нём Хомяков излагает свою философию истории, основанную на борьбе двух начал - «иранства» (духа свободы) и «кушитства» (духа необходимости и вещественного поклонения).
+	«О современных явлениях в области философии» (1859) - критика западноевропейского рационализма, в частности философии Гегеля.
+	«Мнение русских об иностранцах», «Мнение иностранцев о России» - публицистические работы, посвящённые культурному и историческому взаимодействию России и Европы.
+Богословские сочинения
+Главные богословские работы Хомякова были написаны в форме полемических писем и статей, преимущественно на французском языке, в ответ на критику Православия с католической и протестантской сторон.
+	«Несколько слов православного христианина о западных вероисповеданиях» (три брошюры, 1853–1858) - основополагающие тексты, в которых Хомяков развивает учение о Церкви как о живом организме, «единстве во множестве», основанном на благодати и взаимной любви. Центральным понятием здесь является «соборность».
+`,
     keyIdeas: ["Соборность", "Православный дух", "Общинный уклад", "Самобытный путь"],
+    sources: [
+      "Хомяков А.С. О старом и новом (1839)",
+      "Хомяков А.С. Семирамида (1851–1860)",
+      "Хомяков А.С. Церковь одна (1844)",
+    ],
   },
 };
 
@@ -188,17 +240,15 @@ const CHARS = {
 ───────────────────────────────────────────── */
 const RUNE_SET = ["Ѣ","Ъ","Ѳ","Ѵ","Ѡ","Ѧ","Ѫ","Ѯ","Ѱ","Ф"];
 function FloatingRunes({ color }) {
-  const items = useRef(
-    Array.from({ length: 7 }, (_, i) => ({
-      id: i,
-      rune: RUNE_SET[i % RUNE_SET.length],
-      x: 8 + Math.random() * 82,
-      y: 8 + Math.random() * 82,
-      delay: Math.random() * 4,
-      dur: 5 + Math.random() * 5,
-      size: 14 + Math.random() * 30,
-    }))
-  ).current;
+ const items = Array.from({ length:7 }, (_, i) => ({
+ id: i,
+ rune: RUNE_SET[i % RUNE_SET.length],
+ x:10 + ((i *13) %80),
+ y:12 + ((i *17) %76),
+ delay: (i %4) *0.7,
+ dur:5 + (i %5),
+ size:16 + (i %6) *4,
+ }));
 
   return (
     <div style={{ position:"absolute", inset:0, overflow:"hidden", pointerEvents:"none", zIndex:1 }}>
@@ -234,24 +284,48 @@ function ChatSingle({ char }) {
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior:"smooth" }); }, [messages, thinking]);
   useEffect(() => { setTimeout(() => inputRef.current?.focus(), 700); }, []);
 
-  async function sendMessage() {
-    const q = input.trim();
-    if (!q || thinking) return;
-    setInput("");
-    setMessages(p => [...p, { from:"user", text:q }]);
-    setThinking(true);
+ async function sendMessage() {
+ const q = input.trim();
+ if (!q || thinking) return;
 
-    // ══════════════════════════════════════════
-    // TODO: бэкендщик заменяет этот блок на
-    //       реальный fetch('/api/chat', { ... })
-    //       и берёт ответ из data.reply
-    await new Promise(r => setTimeout(r, 1200)); // имитация задержки
-    const mockReply = `[Ответ ${char.shortName} на запрос: "${q}"] — здесь будет текст от бэкенда.`;
-    // ══════════════════════════════════════════
+ const historyPayload = messages.map(m => ({
+ role: m.from === "user" ? "user" : "assistant",
+ content: m.text,
+ }));
 
-    setMessages(p => [...p, { from:"ai", text:mockReply }]);
-    setThinking(false);
-  }
+ setInput("");
+ setMessages(p => [...p, { from:"user", text:q }]);
+ setThinking(true);
+
+ try {
+ const resp = await fetch("/api/chat", {
+ method: "POST",
+ headers: { "Content-Type": "application/json" },
+ body: JSON.stringify({
+ character: char.id,
+ message: q,
+ history: historyPayload,
+ }),
+ });
+
+ const data = await resp.json();
+ if (!resp.ok) {
+ throw new Error(data?.error || "Ошибка сервера");
+ }
+
+ setMessages(p => [...p, { from:"ai", text:data.reply }]);
+ } catch (error) {
+ setMessages(p => [
+ ...p,
+ {
+ from: "ai",
+ text: `Не удалось получить ответ от локальной модели. ${error instanceof Error ? error.message : ""}`,
+ },
+ ]);
+ } finally {
+ setThinking(false);
+ }
+ }
 
   return (
     <div style={{ display:"flex", flexDirection:"column", height:"100%", paddingTop:"80px" }}>
@@ -311,7 +385,7 @@ function ChatSingle({ char }) {
         {/* Модальное окно с полной биографией */}
         <AnimatePresence>
           {bioOpen && (
-            <motion.div
+            <Motion.div
               initial={{ opacity:0 }}
               animate={{ opacity:1 }}
               exit={{ opacity:0 }}
@@ -323,7 +397,7 @@ function ChatSingle({ char }) {
               }}
               onClick={() => setBioOpen(false)}
             >
-              <motion.div
+              <Motion.div
                 initial={{ opacity:0, y:30 }}
                 animate={{ opacity:1, y:0 }}
                 exit={{ opacity:0, y:30 }}
@@ -362,14 +436,14 @@ function ChatSingle({ char }) {
                 }}>
                   {char.role}
                 </div>
-                <h2 style={{
-                  fontFamily:"'Playfair Display',serif",
-                  fontSize:"clamp(1.4rem,2vw,2rem)", fontWeight:900,
-                  color:"var(--parchment)", marginBottom:"1.5rem",
-                  lineHeight:1.15,
-                }}>
-                  {char.fullName}
-                </h2>
+ <h2 style={{
+ fontFamily:"'Playfair Display',serif",
+ fontSize:"clamp(1.4rem,2vw,2rem)", fontWeight:900,
+ color:"var(--parchment)", marginBottom:"1.5rem",
+ lineHeight:1.15,
+ }}>
+ {char.fullName}
+ </h2>
 
                 <div style={{
                   height:1, marginBottom:"1.5rem",
@@ -393,8 +467,8 @@ function ChatSingle({ char }) {
                 }}>
                   нажмите за пределами окна, чтобы закрыть
                 </div>
-              </motion.div>
-            </motion.div>
+              </Motion.div>
+            </Motion.div>
           )}
         </AnimatePresence>
         <div style={{ display:"flex", flexWrap:"wrap", gap:"0.35rem" }}>
@@ -454,15 +528,42 @@ function ChatSingle({ char }) {
                 {m.text}
               </div>
             ) : (
-              <div style={{
-                background:`rgba(${accentRgb},0.1)`,
-                border:`1px solid rgba(${accentRgb},0.3)`,
-                padding:"0.85rem 1rem",
-                fontFamily:"'IM Fell English',serif",
-                fontSize:"0.95rem", color:"var(--parchment-dim)",
-                lineHeight:1.8, whiteSpace:"pre-wrap",
-              }}>
-                {m.text}
+              <div>
+                <div style={{
+                  background:`rgba(${accentRgb},0.1)`,
+                  border:`1px solid rgba(${accentRgb},0.3)`,
+                  padding:"0.85rem 1rem",
+                  fontFamily:"'IM Fell English',serif",
+                  fontSize:"0.95rem", color:"var(--parchment-dim)",
+                  lineHeight:1.8, whiteSpace:"pre-wrap",
+                }}>
+                  {m.text}
+                </div>
+                {/* Источники — TODO: заменить на m.sources когда бэкенд добавит их в ответ */}
+                <div style={{
+                  marginTop:"0.4rem",
+                  padding:"0.4rem 0.7rem",
+                  borderLeft:`2px solid rgba(${accentRgb},0.4)`,
+                }}>
+                  <div style={{
+                    fontFamily:"'Cormorant Garamond',serif",
+                    fontSize:"0.65rem", letterSpacing:"0.2em",
+                    textTransform:"uppercase", color:"rgba(201,168,76,0.5)",
+                    marginBottom:"0.25rem",
+                  }}>
+                    Источники
+                  </div>
+                  {char.sources.map((s, si) => (
+                    <div key={si} style={{
+                      fontFamily:"'IM Fell English',serif",
+                      fontStyle:"italic", fontSize:"0.78rem",
+                      color:"rgba(242,228,196,0.35)",
+                      lineHeight:1.6,
+                    }}>
+                      {s}
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -514,29 +615,76 @@ function DebateView() {
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior:"smooth" }); }, [exchanges, thinking]);
 
-  async function sendToAll() {
-    const q = input.trim();
-    if (!q || thinking) return;
-    setInput("");
-    setThinking(true);
-    setExchanges(p => [...p, { question:q, west:null, slav:null }]);
+ async function sendToAll() {
+ const q = input.trim();
+ if (!q || thinking) return;
 
-    // ══════════════════════════════════════════
-    // TODO: бэкендщик заменяет этот блок на
-    //       два параллельных fetch к /api/chat
-    //       с разными character: 'west' / 'slav'
-    await new Promise(r => setTimeout(r, 1400));
-    const mockWest = `[Чаадаев о "${q}"] — ответ западника придёт от бэкенда.`;
-    const mockSlav = `[Хомяков о "${q}"] — ответ славянофила придёт от бэкенда.`;
-    // ══════════════════════════════════════════
+ const buildHistoryForCharacter = (side) => {
+ const result = [];
+ for (const ex of exchanges) {
+ result.push({ role: "user", content: ex.question });
+ if (ex[side]) {
+ result.push({ role: "assistant", content: ex[side] });
+ }
+ }
+ return result;
+ };
 
-    setExchanges(p => {
-      const u = [...p];
-      u[u.length - 1] = { question:q, west:mockWest, slav:mockSlav };
-      return u;
-    });
-    setThinking(false);
-  }
+ setInput("");
+ setThinking(true);
+ setExchanges(p => [...p, { question:q, west:null, slav:null }]);
+
+ try {
+ const [westResp, slavResp] = await Promise.all([
+ fetch("/api/chat", {
+ method: "POST",
+ headers: { "Content-Type": "application/json" },
+ body: JSON.stringify({
+ character: "west",
+ message: q,
+ history: buildHistoryForCharacter("west"),
+ }),
+ }),
+ fetch("/api/chat", {
+ method: "POST",
+ headers: { "Content-Type": "application/json" },
+ body: JSON.stringify({
+ character: "slav",
+ message: q,
+ history: buildHistoryForCharacter("slav"),
+ }),
+ }),
+ ]);
+
+ const westData = await westResp.json();
+ const slavData = await slavResp.json();
+
+ const westText = westResp.ok
+ ? westData.reply
+ : `Ошибка запроса к модели: ${westData?.error || "unknown"}`;
+ const slavText = slavResp.ok
+ ? slavData.reply
+ : `Ошибка запроса к модели: ${slavData?.error || "unknown"}`;
+
+ setExchanges(p => {
+ const u = [...p];
+ u[u.length -1] = { question:q, west:westText, slav:slavText };
+ return u;
+ });
+ } catch {
+ setExchanges(p => {
+ const u = [...p];
+ u[u.length -1] = {
+ question:q,
+ west:"Не удалось получить ответ от локальной модели.",
+ slav:"Не удалось получить ответ от локальной модели.",
+ };
+ return u;
+ });
+ } finally {
+ setThinking(false);
+ }
+ }
 
   return (
     <div style={{
@@ -544,7 +692,6 @@ function DebateView() {
       background:"linear-gradient(160deg,#080604 0%,#0e0a05 100%)",
       display:"flex", flexDirection:"column", color:"var(--parchment)",
     }}>
-
 
       {/* Диспуты */}
       <div style={{
@@ -585,26 +732,53 @@ function DebateView() {
             {/* Ответы в двух колонках */}
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"1rem" }}>
               {[
-                { key:"west", rgb:"42,100,150",  text:ex.west },
-                { key:"slav", rgb:"155,34,21",   text:ex.slav },
-              ].map(({ key, rgb, text }) => (
-                <div key={key} style={{
-                  padding:"0.9rem 1.05rem",
-                  background:`rgba(${rgb},0.08)`,
-                  border:`1px solid rgba(${rgb},0.26)`,
-                  fontFamily:"'IM Fell English',serif",
-                  fontSize:"0.92rem", color:"var(--parchment-dim)",
-                  lineHeight:1.8, whiteSpace:"pre-wrap", minHeight:80,
-                }}>
-                  {text ?? (
-                    <div style={{ display:"flex", gap:6, alignItems:"center" }}>
-                      <span className="thinking-dot" />
-                      <span className="thinking-dot" />
-                      <span className="thinking-dot" />
+                  { key:"slav", rgb:"155,34,21", text:ex.slav, char: CHARS.slav },
+                  { key:"west", rgb:"42,100,150", text:ex.west, char: CHARS.west },
+                ].map(({ key, rgb, text, char }) => (
+                  <div key={key}>
+                    <div style={{
+                      padding:"0.9rem 1.05rem",
+                      background:`rgba(${rgb},0.08)`,
+                      border:`1px solid rgba(${rgb},0.26)`,
+                      fontFamily:"'IM Fell English',serif",
+                      fontSize:"0.92rem", color:"var(--parchment-dim)",
+                      lineHeight:1.8, whiteSpace:"pre-wrap", minHeight:80,
+                    }}>
+                      {text ?? (
+                        <div style={{ display:"flex", gap:6, alignItems:"center" }}>
+                          <span className="thinking-dot" />
+                          <span className="thinking-dot" />
+                          <span className="thinking-dot" />
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              ))}
+                    {text && (
+                      <div style={{
+                        marginTop:"0.4rem",
+                        padding:"0.4rem 0.7rem",
+                        borderLeft:`2px solid rgba(${rgb},0.4)`,
+                      }}>
+                        <div style={{
+                          fontFamily:"'Cormorant Garamond',serif",
+                          fontSize:"0.63rem", letterSpacing:"0.2em",
+                          textTransform:"uppercase", color:"rgba(201,168,76,0.45)",
+                          marginBottom:"0.2rem",
+                        }}>
+                          Источники
+                        </div>
+                        {char.sources.map((s, si) => (
+                          <div key={si} style={{
+                            fontFamily:"'IM Fell English',serif",
+                            fontStyle:"italic", fontSize:"0.75rem",
+                            color:"rgba(242,228,196,0.32)", lineHeight:1.6,
+                          }}>
+                            {s}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
             </div>
           </div>
         ))}
@@ -640,7 +814,7 @@ function Panel({ char, active, setActive }) {
   const isOtherActive = active && !isActive;
 
   return (
-    <motion.div
+    <Motion.div
       animate={{ width: isActive ? "100%" : isOtherActive ? "0%" : "50%" }}
       transition={{ duration:0.75, ease:[0.76,0,0.24,1] }}
       style={{ position:"relative", height:"100vh", overflow:"hidden", flexShrink:0 }}
@@ -676,7 +850,7 @@ function Panel({ char, active, setActive }) {
       {/* ── СОСТОЯНИЕ ПОКОЯ ── */}
       <AnimatePresence>
         {!isActive && !isOtherActive && (
-          <motion.div
+          <Motion.div
             key="idle"
             initial={{ opacity:0 }}
             animate={{ opacity:1 }}
@@ -691,7 +865,7 @@ function Panel({ char, active, setActive }) {
             }}
           >
             {/* Портрет в круге */}
-            <motion.div
+            <Motion.div
               whileHover={{ scale:1.05 }}
               transition={{ duration:0.5 }}
               style={{
@@ -707,7 +881,7 @@ function Panel({ char, active, setActive }) {
                 objectFit:"cover", objectPosition:"center top",
                 filter:"grayscale(80%) sepia(30%) contrast(1.1)",
               }} />
-            </motion.div>
+            </Motion.div>
 
             <div style={{
               fontFamily:"'Cormorant Garamond',serif",
@@ -752,14 +926,14 @@ function Panel({ char, active, setActive }) {
             }}>
               нажмите для диалога
             </div>
-          </motion.div>
+          </Motion.div>
         )}
       </AnimatePresence>
 
       {/* ── АКТИВНОЕ СОСТОЯНИЕ ── */}
       <AnimatePresence>
         {isActive && (
-          <motion.div
+          <Motion.div
             key="active"
             initial={{ opacity:0 }}
             animate={{ opacity:1 }}
@@ -793,10 +967,10 @@ function Panel({ char, active, setActive }) {
               ← Назад
             </button>
             <ChatSingle char={char} />
-          </motion.div>
+          </Motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </Motion.div>
   );
 }
 
@@ -807,7 +981,7 @@ function CenterDivider({ visible }) {
   return (
     <AnimatePresence>
       {visible && (
-        <motion.div
+        <Motion.div
           initial={{ opacity:0, scaleY:0 }}
           animate={{ opacity:1, scaleY:1 }}
           exit={{ opacity:0, scaleY:0 }}
@@ -816,7 +990,6 @@ function CenterDivider({ visible }) {
             position:"absolute", left:"50%", top:"8%", bottom:"8%",
             transform:"translateX(-50%)", width:1,
             background:"linear-gradient(180deg,transparent,var(--gold) 20%,var(--gold) 80%,transparent)",
-            animation:"divider-glow 3s ease-in-out infinite",
             zIndex:20, pointerEvents:"none",
           }}
         >
@@ -835,7 +1008,7 @@ function CenterDivider({ visible }) {
               letterSpacing:"0.1em", color:"var(--gold)",
             }}>VS</span>
           </div>
-        </motion.div>
+        </Motion.div>
       )}
     </AnimatePresence>
   );
@@ -858,7 +1031,7 @@ export default function App() {
         {/* РЕЖИМ ДИСПУТА */}
         <AnimatePresence>
           {mode === "debate" && (
-            <motion.div
+            <Motion.div
               key="debate"
               initial={{ opacity:0 }}
               animate={{ opacity:1 }}
@@ -867,14 +1040,14 @@ export default function App() {
               style={{ position:"absolute", inset:0, zIndex:30 }}
             >
               <DebateView />
-            </motion.div>
+            </Motion.div>
           )}
         </AnimatePresence>
 
         {/* РЕЖИМ МОНОЛОГА (split-панели) */}
         <AnimatePresence>
           {mode === "single" && (
-            <motion.div
+            <Motion.div
               key="split"
               initial={{ opacity:0 }}
               animate={{ opacity:1 }}
@@ -885,19 +1058,18 @@ export default function App() {
               <Panel char={CHARS.slav} active={active} setActive={setActive} />
               <Panel char={CHARS.west} active={active} setActive={setActive} />
               <CenterDivider visible={!active} />
-            </motion.div>
+            </Motion.div>
           )}
         </AnimatePresence>
 
         {/* ПЕРЕКЛЮЧАТЕЛЬ РЕЖИМОВ */}
-        <motion.div
+        <Motion.div
           initial={{ opacity:0, y:16 }}
           animate={{ opacity:1, y:0 }}
           transition={{ delay:0.7 }}
           style={{
             position:"absolute", top:0, left:0, right:0,
-            display:"flex", justifyContent:"center", zIndex:40,
-            display:"flex", alignItems:"center",
+            display:"flex", justifyContent:"center", alignItems:"center", zIndex:40,
             background:"rgba(5,3,2,0.82)",
             border:"1px solid rgba(201,168,76,0.16)",
             backdropFilter:"blur(16px)",
@@ -916,9 +1088,7 @@ export default function App() {
           >
             Диспут
           </button>
-        </motion.div>
-
-
+        </Motion.div>
 
       </div>
     </>
