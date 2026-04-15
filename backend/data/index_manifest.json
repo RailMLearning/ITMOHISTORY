@@ -1,17 +1,3 @@
-{
-  "version": 1,
-  "createdAt": "2026-04-15T18:33:28.340Z",
-  "vectorEnabled": true,
-  "embeddingModel": "nomic-embed-text",
-  "totalVectors": 4504,
-  "embeddedVectors": 4504,
-  "files": {
-    "discovery": "C:\\Users\\Rail\\Desktop\\history-duel\\backend\\data\\discovery.json",
-    "ingest": "C:\\Users\\Rail\\Desktop\\history-duel\\backend\\data\\ingest.jsonl",
-    "ocrCache": "C:\\Users\\Rail\\Desktop\\history-duel\\backend\\data\\ocr_cache.jsonl",
-    "normalized": "C:\\Users\\Rail\\Desktop\\history-duel\\backend\\data\\normalized.jsonl",
-    "chunks": "C:\\Users\\Rail\\Desktop\\history-duel\\backend\\data\\chunks.jsonl",
-    "embeddings": "C:\\Users\\Rail\\Desktop\\history-duel\\backend\\data\\embeddings.jsonl",
-    "index": "C:\\Users\\Rail\\Desktop\\history-duel\\backend\\data\\vector\\index.json"
-  }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:50010bf550b3f94e5b4172deb60212f8606595a011f0a0710c270e4070a1081d
+size 820

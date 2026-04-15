@@ -1,0 +1,4 @@
+backend/data/**/*.jsonl filter=lfs diff=lfs merge=lfs -text
+backend/data/vector/*.json filter=lfs diff=lfs merge=lfs -text
+backend/data/rag_index.json filter=lfs diff=lfs merge=lfs -text
+backend/data/index_manifest.json filter=lfs diff=lfs merge=lfs -text
