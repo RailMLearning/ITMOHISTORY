@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "createdAt": "2026-04-15T18:33:28.340Z",
+  "vectorEnabled": true,
+  "embeddingModel": "nomic-embed-text",
+  "totalVectors": 4504,
+  "embeddedVectors": 4504,
+  "files": {
+    "discovery": "C:\\Users\\Rail\\Desktop\\history-duel\\backend\\data\\discovery.json",
+    "ingest": "C:\\Users\\Rail\\Desktop\\history-duel\\backend\\data\\ingest.jsonl",
+    "ocrCache": "C:\\Users\\Rail\\Desktop\\history-duel\\backend\\data\\ocr_cache.jsonl",
+    "normalized": "C:\\Users\\Rail\\Desktop\\history-duel\\backend\\data\\normalized.jsonl",
+    "chunks": "C:\\Users\\Rail\\Desktop\\history-duel\\backend\\data\\chunks.jsonl",
+    "embeddings": "C:\\Users\\Rail\\Desktop\\history-duel\\backend\\data\\embeddings.jsonl",
+    "index": "C:\\Users\\Rail\\Desktop\\history-duel\\backend\\data\\vector\\index.json"
+  }
+}

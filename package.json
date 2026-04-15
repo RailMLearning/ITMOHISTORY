@@ -7,6 +7,11 @@
  "dev": "vite",
  "server": "node backend/server.js",
  "dev:full": "concurrently \"npm run server\" \"npm run dev\"",
+ "pipeline:ingest": "node backend/pipeline/ingest.js",
+ "pipeline:chunk": "node backend/pipeline/chunk.js",
+ "pipeline:embed": "node backend/pipeline/embed.js",
+ "pipeline:index": "node backend/pipeline/index.js",
+ "pipeline:full": "node backend/pipeline/full.js",
  "build": "vite build",
  "lint": "eslint .",
  "preview": "vite preview"
@@ -14,6 +19,7 @@
  "dependencies": {
  "express": "^4.21.2",
  "framer-motion": "^12.34.3",
+ "pdfjs-dist": "^4.10.38",
  "react": "^19.2.0",
  "react-dom": "^19.2.0"
  },

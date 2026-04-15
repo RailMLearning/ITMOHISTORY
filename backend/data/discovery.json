@@ -1,0 +1,90 @@
+{
+  "createdAt": "2026-04-15T18:27:06.785Z",
+  "files": [
+    {
+      "fileName": "Chaadaev_P_Polnoe_sobranie_sochineniy_i_izbrannye_pisma_Tom_1.pdf",
+      "sourceId": "chaadaev_tom_1",
+      "character": "west",
+      "volume": 1,
+      "exists": true,
+      "filePath": "C:\\Users\\Rail\\Desktop\\history-duel\\backend\\sources\\Chaadaev_P_Polnoe_sobranie_sochineniy_i_izbrannye_pisma_Tom_1.pdf"
+    },
+    {
+      "fileName": "Chaadaev_P_Polnoe_sobranie_sochineniy_i_izbrannye_pisma_Tom_2.pdf",
+      "sourceId": "chaadaev_tom_2",
+      "character": "west",
+      "volume": 2,
+      "exists": true,
+      "filePath": "C:\\Users\\Rail\\Desktop\\history-duel\\backend\\sources\\Chaadaev_P_Polnoe_sobranie_sochineniy_i_izbrannye_pisma_Tom_2.pdf"
+    },
+    {
+      "fileName": "хомяков том 1.pdf",
+      "sourceId": "khomyakov_tom_1",
+      "character": "slav",
+      "volume": 1,
+      "exists": true,
+      "filePath": "C:\\Users\\Rail\\Desktop\\history-duel\\backend\\sources\\хомяков том 1.pdf"
+    },
+    {
+      "fileName": "хомяков том 2.pdf",
+      "sourceId": "khomyakov_tom_2",
+      "character": "slav",
+      "volume": 2,
+      "exists": true,
+      "filePath": "C:\\Users\\Rail\\Desktop\\history-duel\\backend\\sources\\хомяков том 2.pdf"
+    },
+    {
+      "fileName": "хомяков том 3.pdf",
+      "sourceId": "khomyakov_tom_3",
+      "character": "slav",
+      "volume": 3,
+      "exists": true,
+      "filePath": "C:\\Users\\Rail\\Desktop\\history-duel\\backend\\sources\\хомяков том 3.pdf"
+    },
+    {
+      "fileName": "хомяков том 8.pdf",
+      "sourceId": "khomyakov_tom_8",
+      "character": "slav",
+      "volume": 8,
+      "exists": true,
+      "filePath": "C:\\Users\\Rail\\Desktop\\history-duel\\backend\\sources\\хомяков том 8.pdf"
+    }
+  ],
+  "byCharacter": {
+    "west": {
+      "expectedVolumes": [
+        1,
+        2
+      ],
+      "foundVolumes": [
+        1,
+        2
+      ],
+      "missingVolumes": []
+    },
+    "slav": {
+      "expectedVolumes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "foundVolumes": [
+        1,
+        2,
+        3,
+        8
+      ],
+      "missingVolumes": [
+        4,
+        5,
+        6,
+        7
+      ]
+    }
+  }
+}

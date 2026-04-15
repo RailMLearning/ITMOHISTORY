@@ -75,7 +75,6 @@ body { overflow: hidden; background: #050302; }
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
   background-clip:text;
-  animation:shimmer-gold 5s linear infinite;
 }
 
 .ornament-border {
@@ -84,7 +83,7 @@ body { overflow: hidden; background: #050302; }
   pointer-events:none; z-index:4;
 }
 
-.message-appear { animation:rise .4s ease forwards; opacity:0; }
+.message-appear { opacity:1; }
 
 .thinking-dot {
   display:inline-block; width:6px; height:6px; border-radius:50%;
@@ -182,6 +181,56 @@ const CHARS = {
   },
 };
 
+function SourceList({ sources, accentRgb }) {
+  const firstSource = Array.isArray(sources) ? sources[0] : null;
+
+  if (!firstSource) {
+    return null;
+  }
+
+  return (
+    <div style={{ marginTop:"0.7rem" }}>
+      <div style={{
+        fontFamily:"'Cormorant Garamond',serif",
+        fontSize:"0.66rem",
+        letterSpacing:"0.18em",
+        textTransform:"uppercase",
+        color:"rgba(242,228,196,0.55)",
+        marginBottom:"0.4rem",
+      }}>
+        Источники
+      </div>
+      <div style={{ display:"flex", flexDirection:"column", gap:"0.35rem" }}>
+        <div key={`${firstSource.id || firstSource.title || "src"}-0`} style={{
+          fontFamily:"'Cormorant Garamond',serif",
+          fontSize:"0.84rem",
+          lineHeight:1.5,
+          color:"rgba(242,228,196,0.78)",
+          border:`1px solid rgba(${accentRgb},0.24)`,
+          background:`rgba(${accentRgb},0.08)`,
+          padding:"0.35rem 0.55rem",
+        }}>
+          <div>{firstSource.author} — {firstSource.work || firstSource.title} ({firstSource.year})</div>
+          {(firstSource.sectionTitle || firstSource.chapterTitle || firstSource.headingPath) && (
+            <div style={{ color:"rgba(242,228,196,0.88)" }}>
+              {firstSource.sectionTitle || firstSource.chapterTitle || firstSource.headingPath}
+            </div>
+          )}
+          <div style={{ color:"rgba(242,228,196,0.65)" }}>
+            {firstSource.locatorLabel || (firstSource.pageStart ? `стр. ${firstSource.pageStart}${firstSource.pageEnd && firstSource.pageEnd !== firstSource.pageStart ? `-${firstSource.pageEnd}` : ""}` : `том ${firstSource.volume}`)}
+            {firstSource.fragmentId ? `; фрагмент ${firstSource.fragmentId}` : ""}
+          </div>
+          {firstSource.quoteSnippet && (
+            <div style={{ color:"rgba(242,228,196,0.6)", fontStyle:"italic" }}>
+              {firstSource.quoteSnippet}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ─────────────────────────────────────────────
    FLOATING RUNES (декор)
 ───────────────────────────────────────────── */
@@ -205,7 +254,6 @@ function FloatingRunes({ color }) {
           left:`${item.x}%`, top:`${item.y}%`,
           fontSize:item.size, fontFamily:"serif",
           color, opacity:0.1,
-          animation:`float-rune ${item.dur}s ease-in-out ${item.delay}s infinite`,
           userSelect:"none",
         }}>
           {item.rune}
@@ -224,6 +272,7 @@ function ChatSingle({ char }) {
   const [input, setInput]       = useState("");
   const [thinking, setThinking] = useState(false);
   const [bioOpen, setBioOpen]   = useState(false);
+  const [sessionId, setSessionId] = useState(null);
   const bottomRef = useRef(null);
   const inputRef  = useRef(null);
   const { accentRgb } = char;
@@ -252,6 +301,7 @@ function ChatSingle({ char }) {
  character: char.id,
  message: q,
  history: historyPayload,
+ sessionId,
  }),
  });
 
@@ -260,13 +310,19 @@ function ChatSingle({ char }) {
  throw new Error(data?.error || "Ошибка сервера");
  }
 
- setMessages(p => [...p, { from:"ai", text:data.reply }]);
+ setSessionId(data.sessionId || sessionId);
+ setMessages(p => [...p, {
+ from:"ai",
+ text:data.reply,
+ sources: Array.isArray(data.sources) ? data.sources : [],
+ }]);
  } catch (error) {
  setMessages(p => [
  ...p,
  {
  from: "ai",
  text: `Не удалось получить ответ от локальной модели. ${error instanceof Error ? error.message : ""}`,
+ sources: [],
  },
  ]);
  } finally {
@@ -484,6 +540,7 @@ function ChatSingle({ char }) {
                 lineHeight:1.8, whiteSpace:"pre-wrap",
               }}>
                 {m.text}
+                <SourceList sources={m.sources} accentRgb={accentRgb} />
               </div>
             )}
           </div>
@@ -531,6 +588,7 @@ function DebateView() {
   const [exchanges, setExchanges] = useState([]);
   const [input, setInput]         = useState("");
   const [thinking, setThinking]   = useState(false);
+  const [sessionId, setSessionId] = useState(null);
   const bottomRef = useRef(null);
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior:"smooth" }); }, [exchanges, thinking]);
@@ -543,8 +601,8 @@ function DebateView() {
  const result = [];
  for (const ex of exchanges) {
  result.push({ role: "user", content: ex.question });
- if (ex[side]) {
- result.push({ role: "assistant", content: ex[side] });
+ if (ex[side]?.text) {
+ result.push({ role: "assistant", content: ex[side].text });
  }
  }
  return result;
@@ -555,49 +613,48 @@ function DebateView() {
  setExchanges(p => [...p, { question:q, west:null, slav:null }]);
 
  try {
- const [westResp, slavResp] = await Promise.all([
- fetch("/api/chat", {
+ const debateResp = await fetch("/api/chat/debate", {
  method: "POST",
  headers: { "Content-Type": "application/json" },
  body: JSON.stringify({
- character: "west",
  message: q,
- history: buildHistoryForCharacter("west"),
+ sessionId,
+ historyByCharacter: {
+ west: buildHistoryForCharacter("west"),
+ slav: buildHistoryForCharacter("slav"),
+ },
  }),
- }),
- fetch("/api/chat", {
- method: "POST",
- headers: { "Content-Type": "application/json" },
- body: JSON.stringify({
- character: "slav",
- message: q,
- history: buildHistoryForCharacter("slav"),
- }),
- }),
- ]);
-
- const westData = await westResp.json();
- const slavData = await slavResp.json();
-
- const westText = westResp.ok
- ? westData.reply
- : `Ошибка запроса к модели: ${westData?.error || "unknown"}`;
- const slavText = slavResp.ok
- ? slavData.reply
- : `Ошибка запроса к модели: ${slavData?.error || "unknown"}`;
-
- setExchanges(p => {
- const u = [...p];
- u[u.length -1] = { question:q, west:westText, slav:slavText };
- return u;
  });
- } catch {
+
+ const debateData = await debateResp.json();
+ if (!debateResp.ok) {
+ throw new Error(debateData?.error || "Не удалось получить ответы для диспута");
+ }
+
+ setSessionId(debateData.sessionId || sessionId);
+
  setExchanges(p => {
  const u = [...p];
  u[u.length -1] = {
  question:q,
- west:"Не удалось получить ответ от локальной модели.",
- slav:"Не удалось получить ответ от локальной модели.",
+ west: {
+ text: debateData?.west?.reply || "Нет ответа",
+ sources: Array.isArray(debateData?.west?.sources) ? debateData.west.sources : [],
+ },
+ slav: {
+ text: debateData?.slav?.reply || "Нет ответа",
+ sources: Array.isArray(debateData?.slav?.sources) ? debateData.slav.sources : [],
+ },
+ };
+ return u;
+ });
+ } catch (error) {
+ setExchanges(p => {
+ const u = [...p];
+ u[u.length -1] = {
+ question:q,
+ west:{ text:`Не удалось получить ответ от локальной модели. ${error instanceof Error ? error.message : ""}`, sources:[] },
+ slav:{ text:`Не удалось получить ответ от локальной модели. ${error instanceof Error ? error.message : ""}`, sources:[] },
  };
  return u;
  });
@@ -653,9 +710,9 @@ function DebateView() {
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"1rem" }}>
               {
                 [
-                  { key:"west", rgb:"42,100,150",  text:ex.west },
-                  { key:"slav", rgb:"155,34,21",   text:ex.slav },
-                ].map(({ key, rgb, text }) => (
+                  { key:"west", rgb:"42,100,150",  payload:ex.west },
+                  { key:"slav", rgb:"155,34,21",   payload:ex.slav },
+                ].map(({ key, rgb, payload }) => (
                   <div key={key} style={{
                     padding:"0.9rem 1.05rem",
                     background:`rgba(${rgb},0.08)`,
@@ -664,13 +721,14 @@ function DebateView() {
                     fontSize:"0.92rem", color:"var(--parchment-dim)",
                     lineHeight:1.8, whiteSpace:"pre-wrap", minHeight:80,
                   }}>
-                    {text ?? (
+                    {payload?.text ?? (
                       <div style={{ display:"flex", gap:6, alignItems:"center" }}>
                         <span className="thinking-dot" />
                         <span className="thinking-dot" />
                         <span className="thinking-dot" />
                       </div>
                     )}
+                    <SourceList sources={payload?.sources} accentRgb={rgb} />
                   </div>
                 ))
               }
@@ -768,7 +826,6 @@ function Panel({ char, active, setActive }) {
                 overflow:"hidden",
                 border:"1px solid rgba(201,168,76,0.42)",
                 boxShadow:`0 0 36px ${char.glowColor},0 0 72px ${char.glowColor.replace('0.5','0.15')}`,
-                animation:"candle 4s ease-in-out infinite",
               }}
             >
               <img src={char.portrait} alt="" style={{
@@ -885,7 +942,6 @@ function CenterDivider({ visible }) {
             position:"absolute", left:"50%", top:"8%", bottom:"8%",
             transform:"translateX(-50%)", width:1,
             background:"linear-gradient(180deg,transparent,var(--gold) 20%,var(--gold) 80%,transparent)",
-            animation:"divider-glow 3s ease-in-out infinite",
             zIndex:20, pointerEvents:"none",
           }}
         >
