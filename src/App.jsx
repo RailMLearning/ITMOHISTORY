@@ -1,15 +1,10 @@
-/*
-  History Duel — Frontend Only
-  ─────────────────────────────
-  Стек: React + Framer Motion + встроенный CSS
-  Бэкенд: подключить sendMessage() и sendToAll() — помечено TODO
-  Дизайн: Imperial Russia XIX век
-*/
+
+import { requestChat } from "./request-chat";
 
 import { useState, useRef, useEffect } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
-import chaadaevImg from './assets/Chaadaev_portrait.jpeg';
-import khomyakovImg from './assets/KhomyakovA_AvtoportretABR.jpg';
+const chaadaevImg = "/portraits/chaadaev.jpeg";
+const khomyakovImg = "/portraits/khomyakov.jpg";
 
 /* ─────────────────────────────────────────────
    GLOBAL STYLES
@@ -217,6 +212,7 @@ function SourceList({ sources, accentRgb }) {
             </div>
           )}
           <div style={{ color:"rgba(242,228,196,0.65)" }}>
+            {firstSource.pageStart ? `Страница PDF: ${firstSource.pageStart}. ` : ""}
             {firstSource.locatorLabel || (firstSource.pageStart ? `стр. ${firstSource.pageStart}${firstSource.pageEnd && firstSource.pageEnd !== firstSource.pageStart ? `-${firstSource.pageEnd}` : ""}` : `том ${firstSource.volume}`)}
             {firstSource.fragmentId ? `; фрагмент ${firstSource.fragmentId}` : ""}
           </div>
@@ -225,6 +221,7 @@ function SourceList({ sources, accentRgb }) {
               {firstSource.quoteSnippet}
             </div>
           )}
+          {firstSource.url && <a href={firstSource.url} target="_blank" rel="noreferrer" style={{color:"var(--gold-light)",fontSize:".8rem"}}>Открыть том с источником ↗</a>}
         </div>
       </div>
     </div>
@@ -271,6 +268,8 @@ function ChatSingle({ char }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput]       = useState("");
   const [thinking, setThinking] = useState(false);
+  const [queueMessage, setQueueMessage] = useState("");
+  useEffect(() => { const listener = (event) => setQueueMessage(event.detail || ""); window.addEventListener("history-duel-progress", listener); return () => window.removeEventListener("history-duel-progress", listener); }, []);
   const [bioOpen, setBioOpen]   = useState(false);
   const [sessionId, setSessionId] = useState(null);
   const bottomRef = useRef(null);
@@ -294,7 +293,7 @@ function ChatSingle({ char }) {
  setThinking(true);
 
  try {
- const resp = await fetch("/api/chat", {
+ const resp = await requestChat("/api/chat", {
  method: "POST",
  headers: { "Content-Type": "application/json" },
  body: JSON.stringify({
@@ -321,7 +320,7 @@ function ChatSingle({ char }) {
  ...p,
  {
  from: "ai",
- text: `Не удалось получить ответ от локальной модели. ${error instanceof Error ? error.message : ""}`,
+ text: `Не удалось получить ответ от модели. ${error instanceof Error ? error.message : ""}`,
  sources: [],
  },
  ]);
@@ -556,7 +555,7 @@ function ChatSingle({ char }) {
           }}>
             <span className="thinking-dot" />
             <span className="thinking-dot" />
-            <span className="thinking-dot" />
+            <span className="thinking-dot" /><span style={{marginLeft:10,fontSize:14,color:"var(--parchment-dim)"}}>{queueMessage || "Готовим ответ…"}</span>
           </div>
         )}
         <div ref={bottomRef} />
@@ -582,12 +581,14 @@ function ChatSingle({ char }) {
 
 /* ─────────────────────────────────────────────
    DEBATE VIEW (параллельный режим)
-   TODO для бэкендщика: заменить mock в sendToAll()
+   Две независимые роли с отдельной историей
 ───────────────────────────────────────────── */
 function DebateView() {
   const [exchanges, setExchanges] = useState([]);
   const [input, setInput]         = useState("");
   const [thinking, setThinking]   = useState(false);
+  const [queueMessage, setQueueMessage] = useState("");
+  useEffect(() => { const listener = (event) => setQueueMessage(event.detail || ""); window.addEventListener("history-duel-progress", listener); return () => window.removeEventListener("history-duel-progress", listener); }, []);
   const [sessionId, setSessionId] = useState(null);
   const bottomRef = useRef(null);
 
@@ -613,7 +614,7 @@ function DebateView() {
  setExchanges(p => [...p, { question:q, west:null, slav:null }]);
 
  try {
- const debateResp = await fetch("/api/chat/debate", {
+ const debateResp = await requestChat("/api/chat/debate", {
  method: "POST",
  headers: { "Content-Type": "application/json" },
  body: JSON.stringify({
@@ -653,8 +654,8 @@ function DebateView() {
  const u = [...p];
  u[u.length -1] = {
  question:q,
- west:{ text:`Не удалось получить ответ от локальной модели. ${error instanceof Error ? error.message : ""}`, sources:[] },
- slav:{ text:`Не удалось получить ответ от локальной модели. ${error instanceof Error ? error.message : ""}`, sources:[] },
+ west:{ text:`Не удалось получить ответ от модели. ${error instanceof Error ? error.message : ""}`, sources:[] },
+ slav:{ text:`Не удалось получить ответ от модели. ${error instanceof Error ? error.message : ""}`, sources:[] },
  };
  return u;
  });
@@ -707,7 +708,7 @@ function DebateView() {
             </div>
 
             {/* Ответы в двух колонках */}
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"1rem" }}>
+            <div className="debate-columns" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"1rem" }}>
               {
                 [
                   { key:"west", rgb:"42,100,150",  payload:ex.west },
@@ -718,14 +719,15 @@ function DebateView() {
                     background:`rgba(${rgb},0.08)`,
                     border:`1px solid rgba(${rgb},0.26)`,
                     fontFamily:"'IM Fell English',serif",
-                    fontSize:"0.92rem", color:"var(--parchment-dim)",
+                    fontSize:"1rem", color:"var(--parchment-dim)",
                     lineHeight:1.8, whiteSpace:"pre-wrap", minHeight:80,
                   }}>
+                    <div style={{color:"var(--parchment)",fontFamily:"Georgia, serif",fontSize:"1.2rem",marginBottom:12}}>{key === "west" ? "Пётр Чаадаев" : "Алексей Хомяков"}</div>
                     {payload?.text ?? (
                       <div style={{ display:"flex", gap:6, alignItems:"center" }}>
                         <span className="thinking-dot" />
                         <span className="thinking-dot" />
-                        <span className="thinking-dot" />
+                        <span className="thinking-dot" /><span style={{marginLeft:10,fontSize:14}}>{queueMessage || "Готовим ответ…"}</span>
                       </div>
                     )}
                     <SourceList sources={payload?.sources} accentRgb={rgb} />
@@ -976,7 +978,7 @@ export default function App() {
   return (
     <>
       <style>{STYLES}</style>
-      <div className="noise-overlay" />
+      <div className="noise-overlay" /><div style={{position:"fixed",top:46,right:20,zIndex:45,pointerEvents:"none",fontSize:11,color:"rgba(242,228,196,.45)"}}>Учебная ИИ-реконструкция</div>
 
       <div style={{ width:"100vw", height:"100vh", overflow:"hidden", position:"relative" }}>
 

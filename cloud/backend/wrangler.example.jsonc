@@ -1,0 +1,30 @@
+{
+  "name": "history-duel-rag",
+  "main": "src/worker.mjs",
+  "compatibility_date": "2026-10-18",
+  "workers_dev": true,
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "history-duel-corpus",
+      "database_id": "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+    }
+  ],
+  "ai": {
+    "binding": "AI"
+  },
+  "vectorize": [
+    {
+      "binding": "INDEX",
+      "index_name": "history-duel-bge"
+    }
+  ],
+  "vars": {
+    "MODEL": "@cf/qwen/qwen3-30b-a3b-fp8",
+    "EMBED_MODEL": "@cf/baai/bge-m3",
+    "CORPUS_VERSION": "history-4504-bge-v1"
+  },
+  "observability": {
+    "enabled": false
+  }
+}

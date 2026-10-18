@@ -1,0 +1,3 @@
+# Only for local preview. Keep the actual .dev.vars file out of Git.
+BACKEND_URL=
+BACKEND_TOKEN=

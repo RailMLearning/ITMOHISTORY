@@ -22,3 +22,26 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Credentials and local runtime state
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+!*.dev.vars.example
+.wrangler/
+.vinext/
+.openai/
+**/wrangler.json
+**/wrangler.jsonc
+**/wrangler.toml
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+*secrets*.json
+cloud/backend/data/
+stage2_changed_files.txt

@@ -1,0 +1,8 @@
+{
+  "name": "history-duel",
+  "pages_build_output_dir": "../dist",
+  "compatibility_date": "2026-10-18",
+  "vars": {
+    "BACKEND_URL": "https://YOUR_BACKEND.YOUR_SUBDOMAIN.workers.dev"
+  }
+}

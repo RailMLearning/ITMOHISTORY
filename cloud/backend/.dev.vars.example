@@ -1,0 +1,2 @@
+# Only for local preview. The live value is a Worker secret.
+GATEWAY_TOKEN=

@@ -1,5 +1,13 @@
 # History Duel
 
+**Открыть сайт: [history-duel.pages.dev](https://history-duel.pages.dev/)**
+
+Публичная версия работает в облаке: Qwen3 30B, гибридный RAG, 4504 фрагмента из шести PDF, ответы Чаадаева и Хомякова с источниками. Регистрация посетителя и включённый ноутбук не нужны.
+
+Исходники облачного backend и инструкция размещения — в [cloud/README.md](cloud/README.md). PNG и редактируемые схемы — в [docs/visuals](docs/visuals). Секреты задаются в Cloudflare; в Git хранятся только шаблоны конфигурации.
+
+## Локальная версия с Ollama
+
 Интерфейс для диалога с двумя историческими мыслителями:
 - П. Я. Чаадаев (`west`)
 - А. С. Хомяков (`slav`)
@@ -8,15 +16,15 @@
 
 ## Требования
 
-- Node.js 18+
+- Node.js 22+
 - Установленная и запущенная [Ollama](https://ollama.com/)
-- Загруженная модель (по умолчанию `llama3.1:8b`)
+- Загруженная модель (по умолчанию `qwen3:8b`)
 - Модель эмбеддингов Ollama (по умолчанию `nomic-embed-text`)
 
 Пример подготовки Ollama:
 
 ```powershell
-ollama pull llama3.1:8b
+ollama pull qwen3:8b
 ollama pull nomic-embed-text
 ollama serve
 ```
@@ -81,7 +89,7 @@ npm run pipeline:full
 {
   "reply": "...",
   "character": "Пётр Яковлевич Чаадаев",
-  "model": "llama3.1:8b",
+  "model": "qwen3:8b",
   "sessionId": "...",
   "sources": [
     {
@@ -134,7 +142,7 @@ npm run pipeline:full
 
 - `PORT` — порт backend (по умолчанию `8787`)
 - `OLLAMA_URL` — URL Ollama API (по умолчанию `http://127.0.0.1:11434`)
-- `MODEL_NAME` — имя модели Ollama (по умолчанию `llama3.1:8b`)
+- `MODEL_NAME` — имя модели Ollama (по умолчанию `qwen3:8b`)
 - `EMBED_MODEL` — модель эмбеддингов (по умолчанию `nomic-embed-text`)
 - `RAG_CHUNK_SIZE` — размер чанка в символах (по умолчанию `2200`)
 - `RAG_CHUNK_OVERLAP` — overlap чанков (по умолчанию `450`)

@@ -1,0 +1,1 @@
+{"name":"history-duel-rag","private":true,"type":"module","scripts":{"test":"node --test src/*.test.mjs"}}

@@ -7,7 +7,7 @@ import { loadVectorIndex, retrieveHybrid, runFullPipeline } from "./pipeline/tas
 const app = express();
 const PORT = process.env.PORT || 8787;
 const OLLAMA_URL = process.env.OLLAMA_URL || "http://127.0.0.1:11434";
-const MODEL_NAME = process.env.MODEL_NAME || "llama3.1:8b";
+const MODEL_NAME = process.env.MODEL_NAME || "qwen3:8b";
 
 const MAX_HISTORY_ITEMS = 16;
 const SESSION_TTL_MS = 1000 * 60 * 60;
@@ -289,8 +289,10 @@ async function generateCharacterReply({ character, message, history }) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       model: MODEL_NAME,
+      think: false,
       stream: false,
       options: {
+        num_ctx: 4096,
         temperature: 0.55,
         top_p: 0.9,
         num_predict: 500,
